@@ -28,6 +28,19 @@ namespace RestaurantAPI.Services
             return restaurant;
         }
 
+        public bool DeleteRestaurant(int id)
+        {
+            var restaurant = _context.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (restaurant == null)
+                return false;
+
+            _context.Restaurants.Remove(restaurant);
+            _context.SaveChanges();
+
+            return true;
+        }
+
         public RestaurantDto GetRestaurant(int id)
         {
             var restaurant = _context
