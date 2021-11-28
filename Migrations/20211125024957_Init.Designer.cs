@@ -9,7 +9,7 @@ using RestaurantAPI.Entities;
 namespace RestaurantAPI.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20211124005259_Init")]
+    [Migration("20211125024957_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,17 +28,37 @@ namespace RestaurantAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Addresses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            City = "Kraków",
+                            PostalCode = "30-001",
+                            Street = "Długa 5"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            City = "Kraków",
+                            PostalCode = "30-001",
+                            Street = "Szewska 2"
+                        });
                 });
 
             modelBuilder.Entity("RestaurantAPI.Entities.Dish", b =>
@@ -66,6 +86,22 @@ namespace RestaurantAPI.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("Dishes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Nashville Hot Chicken",
+                            Price = 10.30m,
+                            RestaurantId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Chicken Nuggets",
+                            Price = 5.30m,
+                            RestaurantId = 1
+                        });
                 });
 
             modelBuilder.Entity("RestaurantAPI.Entities.Restaurant", b =>
@@ -81,10 +117,10 @@ namespace RestaurantAPI.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactNumber")
+                    b.Property<string>("ContactEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContantEmail")
+                    b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -104,6 +140,28 @@ namespace RestaurantAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("Restaurants");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddressId = 1,
+                            Category = "Fast Food",
+                            ContactEmail = "contact@kfc.com",
+                            Description = "KFC (short for Kentucky Fried Chicken) is an American fast food restaurant chain headquartered in Louisville, Kentucky, that specializes in fried chicken.",
+                            HasDelivery = true,
+                            Name = "KFC"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AddressId = 2,
+                            Category = "Fast Food",
+                            ContactEmail = "contact@mcdonald.com",
+                            Description = "McDonald's Corporation (McDonald's), incorporated on December 21, 1964, operates and franchises McDonald's restaurants.",
+                            HasDelivery = true,
+                            Name = "McDonald Szewska"
+                        });
                 });
 
             modelBuilder.Entity("RestaurantAPI.Entities.Dish", b =>

@@ -7,6 +7,8 @@
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int RestaurantId { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
         public virtual Restaurant Restaurant {  get; set; }
     }
 }

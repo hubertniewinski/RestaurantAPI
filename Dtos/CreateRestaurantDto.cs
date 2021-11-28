@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace RestaurantAPI.Entities
+﻿namespace RestaurantAPI.Dtos
 {
-    public class Restaurant
+    public class CreateRestaurantDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,10 +9,8 @@ namespace RestaurantAPI.Entities
         public bool HasDelivery { get; set; }
         public string ContactEmail { get; set; }
         public string ContactNumber { get; set; }
-        public int AddressId { get; set; }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public virtual Address Address { get; set; }
-        public virtual List<Dish> Dishes {  get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string PostalCode { get; set; }
     }
 }
