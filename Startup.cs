@@ -26,7 +26,7 @@ namespace RestaurantAPI
             services.AddControllers();
             services.AddDbContext<RestaurantDbContext>();
             services.AddAutoMapper(this.GetType());
-            services.AddScoped<IRestaurantService, RestaurantServices>();
+            services.AddScoped<IRestaurantService, RestaurantService>();
 
             services.AddControllers(options =>
             {

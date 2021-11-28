@@ -1,5 +1,4 @@
 ﻿using RestaurantAPI.Dtos;
-using RestaurantAPI.Entities;
 using System.Collections.Generic;
 
 namespace RestaurantAPI.Services
