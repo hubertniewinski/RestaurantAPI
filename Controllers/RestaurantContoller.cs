@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Dtos;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,22 +12,20 @@ namespace RestaurantAPI.Controllers
     [Route("restaurant")]
     public class RestaurantContoller : ControllerBase
     {
-        private readonly RestaurantDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IRestaurantService _service;
 
-        public RestaurantContoller(RestaurantDbContext context, IMapper mapper)
+        public RestaurantContoller(IRestaurantService service)
         {
-            _context = context;
-            _mapper = mapper;
+            _service = service;
         }
 
         [HttpPost]
         public ActionResult<Restaurant> CreateRestaurant([FromBody] Dtos.CreateRestaurantDto createRestaurantDto)
         {
-            var restaurant = _mapper.Map<Restaurant>(createRestaurantDto);
-            
-            _context.Restaurants.Add(restaurant);
-            _context.SaveChanges();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var restaurant = _service.CreateRestaurant(createRestaurantDto);
 
             return CreatedAtAction(nameof(CreateRestaurant), new { id = restaurant.Id }, restaurant);
         }
@@ -34,30 +33,18 @@ namespace RestaurantAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants()
         {
-            var restaurants = _context
-                .Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes)
-                .ToList();
-
-            var restaurantsDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
+            var restaurantsDtos = _service.GetRestaurants();
 
             return Ok(restaurantsDtos);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Restaurant> GetRestaurant(int id)
+        public ActionResult<RestaurantDto> GetRestaurant(int id)
         {
-            var restaurant = _context
-                .Restaurants
-                .Include(x => x.Address)
-                .Include(x => x.Dishes)
-                .FirstOrDefault(x => x.Id == id);
+            var restaurantDto = _service.GetRestaurant(id);
 
-            if(restaurant == null)
+            if(restaurantDto == null)
                 return NotFound();
-
-            var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
 
             return Ok(restaurantDto);
         }

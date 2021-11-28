@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -25,6 +26,7 @@ namespace RestaurantAPI
             services.AddControllers();
             services.AddDbContext<RestaurantDbContext>();
             services.AddAutoMapper(this.GetType());
+            services.AddScoped<IRestaurantService, RestaurantServices>();
 
             services.AddControllers(options =>
             {
