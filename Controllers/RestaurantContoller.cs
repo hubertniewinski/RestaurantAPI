@@ -19,28 +19,6 @@ namespace RestaurantAPI.Controllers
             _service = service;
         }
 
-        [HttpDelete("{id}")]
-        public ActionResult DeleteRestaurant(int id)
-        {
-            var deleted = _service.DeleteRestaurant(id);
-
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
-        }
-
-        [HttpPost]
-        public ActionResult<Restaurant> CreateRestaurant([FromBody] Dtos.CreateRestaurantDto createRestaurantDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var restaurant = _service.CreateRestaurant(createRestaurantDto);
-
-            return CreatedAtAction(nameof(CreateRestaurant), new { id = restaurant.Id }, restaurant);
-        }
-
         [HttpGet]
         public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants()
         {
@@ -58,6 +36,43 @@ namespace RestaurantAPI.Controllers
                 return NotFound();
 
             return Ok(restaurantDto);
+        }
+
+
+        [HttpPost]
+        public ActionResult<RestaurantDto> CreateRestaurant([FromBody] Dtos.CreateRestaurantDto createRestaurantDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var restaurantDto = _service.CreateRestaurant(createRestaurantDto);
+
+            return CreatedAtAction(nameof(CreateRestaurant), new { id = restaurantDto.Id }, restaurantDto);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteRestaurant(int id)
+        {
+            var deleted = _service.DeleteRestaurant(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateRestaurant(int id, [FromBody] UpdateRestaurantDto updateRestaurantDto)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updated = _service.UpdateRestaurant(id, updateRestaurantDto);
+
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }

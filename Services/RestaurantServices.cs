@@ -18,27 +18,17 @@ namespace RestaurantAPI.Services
             _mapper = mapper;
         }
 
-        public Restaurant CreateRestaurant(CreateRestaurantDto createRestaurantDto)
+        public IEnumerable<RestaurantDto> GetRestaurants()
         {
-            var restaurant = _mapper.Map<Restaurant>(createRestaurantDto);
+            var restaurants = _context
+                .Restaurants
+                .Include(r => r.Address)
+                .Include(r => r.Dishes)
+                .ToList();
 
-            _context.Restaurants.Add(restaurant);
-            _context.SaveChanges();
+            var restaurantsDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 
-            return restaurant;
-        }
-
-        public bool DeleteRestaurant(int id)
-        {
-            var restaurant = _context.Restaurants.FirstOrDefault(x => x.Id == id);
-
-            if (restaurant == null)
-                return false;
-
-            _context.Restaurants.Remove(restaurant);
-            _context.SaveChanges();
-
-            return true;
+            return restaurantsDtos.ToList();
         }
 
         public RestaurantDto GetRestaurant(int id)
@@ -57,17 +47,47 @@ namespace RestaurantAPI.Services
             return restaurantDto;
         }
 
-        public IEnumerable<RestaurantDto> GetRestaurants()
+        public RestaurantDto CreateRestaurant(CreateRestaurantDto createRestaurantDto)
         {
-            var restaurants = _context
-                .Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes)
-                .ToList();
+            var restaurant = _mapper.Map<Restaurant>(createRestaurantDto);
 
-            var restaurantsDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
+            _context.Restaurants.Add(restaurant);
+            _context.SaveChanges();
 
-            return restaurantsDtos.ToList();
+            var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
+
+            return restaurantDto;
+        }
+
+        public bool DeleteRestaurant(int id)
+        {
+            var restaurant = _context.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (restaurant == null)
+                return false;
+
+            _context.Restaurants.Remove(restaurant);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+      
+        public bool UpdateRestaurant(int id, UpdateRestaurantDto updateRestaurantDto)
+        {
+            var restaurant = _context.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (restaurant == null)
+                return false;
+
+            restaurant.Name = updateRestaurantDto.Name;
+            restaurant.Description = updateRestaurantDto.Description;
+            restaurant.HasDelivery = updateRestaurantDto.HasDelivery;
+
+            _context.Restaurants.Update(restaurant);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }
