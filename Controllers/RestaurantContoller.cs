@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace RestaurantAPI.Controllers
 {
     [Route("restaurant")]
+    [ApiController]
     public class RestaurantContoller : ControllerBase
     {
         private readonly IRestaurantService _service;
@@ -28,9 +29,6 @@ namespace RestaurantAPI.Controllers
         {
             var restaurantDto = _service.GetRestaurant(id);
 
-            if(restaurantDto == null)
-                return NotFound();
-
             return Ok(restaurantDto);
         }
 
@@ -38,9 +36,6 @@ namespace RestaurantAPI.Controllers
         [HttpPost]
         public ActionResult<RestaurantDto> CreateRestaurant([FromBody] Dtos.CreateRestaurantDto createRestaurantDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var restaurantDto = _service.CreateRestaurant(createRestaurantDto);
 
             return CreatedAtAction(nameof(CreateRestaurant), new { id = restaurantDto.Id }, restaurantDto);
@@ -49,10 +44,7 @@ namespace RestaurantAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteRestaurant(int id)
         {
-            var deleted = _service.DeleteRestaurant(id);
-
-            if (!deleted)
-                return NotFound();
+            _service.DeleteRestaurant (id);
 
             return NoContent();
         }
@@ -60,13 +52,7 @@ namespace RestaurantAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateRestaurant(int id, [FromBody] UpdateRestaurantDto updateRestaurantDto)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var updated = _service.UpdateRestaurant(id, updateRestaurantDto);
-
-            if (!updated)
-                return NotFound();
+            _service.UpdateRestaurant(id, updateRestaurantDto);
 
             return NoContent();
         }
