@@ -30,6 +30,7 @@ namespace RestaurantAPI
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen();
+            services.AddScoped<RequestTimeMiddleware>();
 
             services.AddControllers(options =>
             {
@@ -50,6 +51,7 @@ namespace RestaurantAPI
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseSwagger();
