@@ -28,6 +28,7 @@ namespace RestaurantAPI
             services.AddDbContext<RestaurantDbContext>();
             services.AddAutoMapper(this.GetType());
             services.AddScoped<IRestaurantService, RestaurantService>();
+            services.AddScoped<IDishService, DishService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen();
             services.AddScoped<RequestTimeMiddleware>();
